@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: V1__create_users_table.sql
+      author: zhora (generated)
+      sqlFile:
+        path: db/changelog/changes/V1_ Initial_scheme.sql
+        relativeToChangeFile: true
+        splitStatements: true
+        endDelimiter: ;
