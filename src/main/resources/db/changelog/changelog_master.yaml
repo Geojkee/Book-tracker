@@ -7,3 +7,21 @@ databaseChangeLog:
         relativeToChangeFile: true
         splitStatements: true
         endDelimiter: ;
+
+  - changeSet:
+      id: V2__change_password.sql
+      author: zhora (generated)
+      sqlFile:
+        path: db/changelog/changes/V2__change_password.sql
+        relativeToChangeFile: true
+        splitStatements: true
+        endDelimiter: ;
+
+  - changeSet:
+      id: V3__update_all_table.sql
+      author: zhora (generated)
+      sqlFile:
+        path: db/changelog/changes/V3__update_all_table.sql
+        relativeToChangeFile: true
+        splitStatements: true
+        endDelimiter: ;
