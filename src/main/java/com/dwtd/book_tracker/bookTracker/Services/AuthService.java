@@ -19,8 +19,8 @@ public class AuthService {
     private final JwtService jwtService;
 
     @Transactional
-    public RegistrationResponse registerUser(AuthRequest request){
-        if (userRepository.findByEmail(request.email()).isPresent()){
+    public RegistrationResponse registerUser(AuthRequest request) {
+        if (userRepository.findByEmail(request.email()).isPresent()) {
             throw new RuntimeException("User with this email is exists");
         }
 
@@ -35,11 +35,11 @@ public class AuthService {
         return new RegistrationResponse(savedUser.getId(), savedUser.getEmail(), token);
     }
 
-    public LoginResponse login(AuthRequest request){
+    public LoginResponse login(AuthRequest request) {
         User user = userRepository.findByEmail(request.email())
-                .orElseThrow(()-> new RuntimeException("Incorrect email or password"));
+                .orElseThrow(() -> new RuntimeException("Incorrect email or password"));
 
-        if (!passwordEncoder.matches(request.password(), user.getPassword())){
+        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
             throw new RuntimeException("Incorrect email or password");
         }
 
