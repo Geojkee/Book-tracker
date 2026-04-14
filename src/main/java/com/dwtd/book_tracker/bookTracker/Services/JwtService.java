@@ -1,5 +1,6 @@
 package com.dwtd.book_tracker.bookTracker.Services;
 
+import com.dwtd.book_tracker.bookTracker.Models.User;
 import io.jsonwebtoken.Jwts;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +12,10 @@ public class JwtService {
 
     private final SecretKey key = Jwts.SIG.HS256.key().build();
 
-    public String generateToken(String email) {
+    public String generateToken(User user) {
         return Jwts.builder()
-                .subject(email)
+                .subject(user.getEmail())
+                .claim("id", user.getId())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
                 .signWith(key)

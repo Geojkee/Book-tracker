@@ -1,6 +1,6 @@
 package com.dwtd.book_tracker.bookTracker.DTO;
 
-public record AuthRequest(
+public record LoginRequest(
         String email,
         String password
 ) {

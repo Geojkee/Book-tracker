@@ -1,6 +1,7 @@
 package com.dwtd.book_tracker.bookTracker.Controller;
 
-import com.dwtd.book_tracker.bookTracker.DTO.AuthRequest;
+import com.dwtd.book_tracker.bookTracker.DTO.LoginRequest;
+import com.dwtd.book_tracker.bookTracker.DTO.RegisterRequest;
 import com.dwtd.book_tracker.bookTracker.DTO.LoginResponse;
 import com.dwtd.book_tracker.bookTracker.DTO.RegistrationResponse;
 import com.dwtd.book_tracker.bookTracker.Services.AuthService;
@@ -21,14 +22,14 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<RegistrationResponse> register(
-            @Valid @RequestBody AuthRequest request
+            @Valid @RequestBody RegisterRequest request
     ) {
         return ResponseEntity.ok(authService.registerUser(request));
     }
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(
-            @Valid @RequestBody AuthRequest request
+            @Valid @RequestBody LoginRequest request
     ) {
         return ResponseEntity.ok(authService.login(request));
     }

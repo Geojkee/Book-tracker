@@ -1,8 +1,11 @@
 package com.dwtd.book_tracker.bookTracker.Services;
 
-import com.dwtd.book_tracker.bookTracker.DTO.AuthRequest;
+import com.dwtd.book_tracker.bookTracker.DTO.LoginRequest;
+import com.dwtd.book_tracker.bookTracker.DTO.RegisterRequest;
 import com.dwtd.book_tracker.bookTracker.DTO.LoginResponse;
 import com.dwtd.book_tracker.bookTracker.DTO.RegistrationResponse;
+import com.dwtd.book_tracker.bookTracker.Exception.InvalidCredentialsException;
+import com.dwtd.book_tracker.bookTracker.Exception.UserAlreadyExistsException;
 import com.dwtd.book_tracker.bookTracker.Models.User;
 import com.dwtd.book_tracker.bookTracker.Repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -19,9 +22,10 @@ public class AuthService {
     private final JwtService jwtService;
 
     @Transactional
-    public RegistrationResponse registerUser(AuthRequest request) {
+    public RegistrationResponse registerUser(RegisterRequest request) {
+
         if (userRepository.findByEmail(request.email()).isPresent()) {
-            throw new RuntimeException("User with this email is exists");
+            throw new UserAlreadyExistsException("A user with this email " + request.email() + " is already registered.");
         }
 
         User user = new User(
@@ -30,20 +34,21 @@ public class AuthService {
         );
 
         User savedUser = userRepository.save(user);
-        String token = jwtService.generateToken(savedUser.getEmail());
+        String token = jwtService.generateToken(savedUser);
 
         return new RegistrationResponse(savedUser.getId(), savedUser.getEmail(), token);
     }
 
-    public LoginResponse login(AuthRequest request) {
+    public LoginResponse login(LoginRequest request) {
+
         User user = userRepository.findByEmail(request.email())
-                .orElseThrow(() -> new RuntimeException("Incorrect email or password"));
+                .orElseThrow(() -> new InvalidCredentialsException("Incorrect email or password"));
 
         if (!passwordEncoder.matches(request.password(), user.getPassword())) {
-            throw new RuntimeException("Incorrect email or password");
+            throw new InvalidCredentialsException("Incorrect email or password");
         }
 
-        String token = jwtService.generateToken(request.email());
+        String token = jwtService.generateToken(user);
 
         return new LoginResponse(token);
     }
