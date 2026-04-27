@@ -32,31 +32,32 @@ public class Book {
     @Column(name = "publish_year", nullable = false)
     private Integer publishYear;
 
-    @Size(max = 50)
     @NotNull
     @Column(name = "status", nullable = false, length = 50)
+    @Enumerated(EnumType.STRING)
     private BookStatus status;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "authors_id", nullable = false)
-    private Author authors;
+    private Author author;
 
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     public Book(
             String title,
             String isbn,
             Integer publishYear,
             Author authors,
-            Long userId
+            User userId
     ) {
         this.title = title;
         this.isbn = isbn;
         this.publishYear = publishYear;
         this.status = BookStatus.PLANNED;
-        this.authors = authors;
-        this.userId = userId;
+        this.author = authors;
+        this.user = userId;
     }
 }

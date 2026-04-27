@@ -1,4 +1,4 @@
-package com.dwtd.book_tracker.bookTracker.DTO;
+package com.dwtd.book_tracker.bookTracker.DTO.Error;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 

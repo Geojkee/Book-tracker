@@ -1,6 +1,6 @@
 package com.dwtd.book_tracker.bookTracker.Exception;
 
-import com.dwtd.book_tracker.bookTracker.DTO.ErrorResponse;
+import com.dwtd.book_tracker.bookTracker.DTO.Error.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +15,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneric(
-            Exception exception,
             HttpServletRequest request
     ) {
         return ResponseEntity
