@@ -1,4 +1,4 @@
-package com.dwtd.book_tracker.bookTracker.DTO;
+package com.dwtd.book_tracker.bookTracker.DTO.Auth;
 
 public record RegistrationResponse(
         Long id,

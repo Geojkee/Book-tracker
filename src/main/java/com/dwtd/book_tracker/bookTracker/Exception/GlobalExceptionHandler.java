@@ -1,6 +1,6 @@
 package com.dwtd.book_tracker.bookTracker.Exception;
 
-import com.dwtd.book_tracker.bookTracker.DTO.ErrorResponse;
+import com.dwtd.book_tracker.bookTracker.DTO.Error.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,22 +9,20 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.Instant;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGeneric(
-            Exception exception,
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFound(
+            NotFoundException exception,
             HttpServletRequest request
     ) {
         return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ErrorResponse(
-                        Instant.now(),
-                        HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                        "Internal Server Error",
-                        "Something went wrong",
+                .status(HttpStatus.NOT_FOUND)
+                .body(ErrorResponse.notFound(
+                        exception.getMessage(),
                         request.getRequestURI()
                 ));
     }
@@ -38,15 +36,11 @@ public class GlobalExceptionHandler {
                 .getFieldErrors()
                 .stream()
                 .map(error -> error.getField() + ":" + error.getDefaultMessage())
-                .findFirst()
-                .orElse("Validation error");
+                .collect(Collectors.joining(", "));
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorResponse(
-                        Instant.now(),
-                        HttpStatus.BAD_REQUEST.value(),
-                        "Bad Request",
+                .body(ErrorResponse.badRequest(
                         message,
                         request.getRequestURI()
                 ));
@@ -59,10 +53,7 @@ public class GlobalExceptionHandler {
     ) {
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
-                .body(new ErrorResponse(
-                        Instant.now(),
-                        HttpStatus.CONFLICT.value(),
-                        "Conflict",
+                .body(ErrorResponse.conflict(
                         exception.getMessage(),
                         request.getRequestURI()
                 ));
@@ -75,11 +66,23 @@ public class GlobalExceptionHandler {
     ) {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
+                .body(ErrorResponse.unauthorized(
+                        exception.getMessage(),
+                        request.getRequestURI()
+                ));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGeneric(
+            HttpServletRequest request
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponse(
                         Instant.now(),
-                        HttpStatus.UNAUTHORIZED.value(),
-                        "Unauthorized",
-                        exception.getMessage(),
+                        HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                        "Internal Server Error",
+                        "Something went wrong",
                         request.getRequestURI()
                 ));
     }

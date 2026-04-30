@@ -1,4 +1,4 @@
-package com.dwtd.book_tracker.bookTracker.DTO;
+package com.dwtd.book_tracker.bookTracker.DTO.Auth;
 
 
 import jakarta.validation.constraints.Email;

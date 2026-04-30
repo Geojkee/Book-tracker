@@ -1,9 +1,9 @@
 package com.dwtd.book_tracker.bookTracker.Services;
 
-import com.dwtd.book_tracker.bookTracker.DTO.LoginRequest;
-import com.dwtd.book_tracker.bookTracker.DTO.RegisterRequest;
-import com.dwtd.book_tracker.bookTracker.DTO.LoginResponse;
-import com.dwtd.book_tracker.bookTracker.DTO.RegistrationResponse;
+import com.dwtd.book_tracker.bookTracker.DTO.Auth.LoginRequest;
+import com.dwtd.book_tracker.bookTracker.DTO.Auth.RegisterRequest;
+import com.dwtd.book_tracker.bookTracker.DTO.Auth.LoginResponse;
+import com.dwtd.book_tracker.bookTracker.DTO.Auth.RegistrationResponse;
 import com.dwtd.book_tracker.bookTracker.Exception.InvalidCredentialsException;
 import com.dwtd.book_tracker.bookTracker.Exception.UserAlreadyExistsException;
 import com.dwtd.book_tracker.bookTracker.Models.User;
