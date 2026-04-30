@@ -7,6 +7,7 @@ import com.dwtd.book_tracker.bookTracker.DTO.Auth.RegistrationResponse;
 import com.dwtd.book_tracker.bookTracker.Services.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,13 +25,17 @@ public class AuthController {
     public ResponseEntity<RegistrationResponse> register(
             @Valid @RequestBody RegisterRequest request
     ) {
-        return ResponseEntity.ok(authService.registerUser(request));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(authService.registerUser(request));
     }
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(
             @Valid @RequestBody LoginRequest request
     ) {
-        return ResponseEntity.ok(authService.login(request));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(authService.login(request));
     }
+
+
 }

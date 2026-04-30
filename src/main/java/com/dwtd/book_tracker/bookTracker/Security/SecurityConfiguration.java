@@ -1,5 +1,7 @@
 package com.dwtd.book_tracker.bookTracker.Security;
 
+import com.dwtd.book_tracker.bookTracker.Exception.Auth.CustomAccessDeniedHandler;
+import com.dwtd.book_tracker.bookTracker.Exception.Auth.CustomAuthenticationEntryPoint;
 import com.dwtd.book_tracker.bookTracker.Services.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +28,10 @@ public class SecurityConfiguration {
 
     private final CustomUserDetailsService userDetailsService;
 
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -34,6 +40,10 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
                         .anyRequest().authenticated()
+                )
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)
+                        .accessDeniedHandler(customAccessDeniedHandler)
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
