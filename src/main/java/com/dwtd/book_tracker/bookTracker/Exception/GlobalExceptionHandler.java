@@ -2,6 +2,7 @@ package com.dwtd.book_tracker.bookTracker.Exception;
 
 import com.dwtd.book_tracker.bookTracker.DTO.Error.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.time.Instant;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -19,6 +21,8 @@ public class GlobalExceptionHandler {
             NotFoundException exception,
             HttpServletRequest request
     ) {
+        log.warn("NotFound: {}", exception.getMessage());
+
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(ErrorResponse.notFound(
@@ -38,6 +42,8 @@ public class GlobalExceptionHandler {
                 .map(error -> error.getField() + ":" + error.getDefaultMessage())
                 .collect(Collectors.joining(", "));
 
+        log.warn("Validation error: {}", message);
+
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.badRequest(
@@ -51,6 +57,8 @@ public class GlobalExceptionHandler {
             UserAlreadyExistsException exception,
             HttpServletRequest request
     ) {
+        log.warn("User already exists: {}", exception.getMessage());
+
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
                 .body(ErrorResponse.conflict(
@@ -64,6 +72,8 @@ public class GlobalExceptionHandler {
             InvalidCredentialsException exception,
             HttpServletRequest request
     ) {
+        log.warn("Invalid credentials: {}", exception.getMessage());
+
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(ErrorResponse.unauthorized(
@@ -74,8 +84,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneric(
+            Exception exception,
             HttpServletRequest request
     ) {
+        log.error("Unhandled exception: ", exception);
+
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponse(
