@@ -21,10 +21,7 @@ public class GlobalExceptionHandler {
     ) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
-                .body(new ErrorResponse(
-                        Instant.now(),
-                        HttpStatus.NOT_FOUND.value(),
-                        "Not found",
+                .body(ErrorResponse.notFound(
                         exception.getMessage(),
                         request.getRequestURI()
                 ));
@@ -43,10 +40,7 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorResponse(
-                        Instant.now(),
-                        HttpStatus.BAD_REQUEST.value(),
-                        "Bad Request",
+                .body(ErrorResponse.badRequest(
                         message,
                         request.getRequestURI()
                 ));
@@ -59,10 +53,7 @@ public class GlobalExceptionHandler {
     ) {
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
-                .body(new ErrorResponse(
-                        Instant.now(),
-                        HttpStatus.CONFLICT.value(),
-                        "Conflict",
+                .body(ErrorResponse.conflict(
                         exception.getMessage(),
                         request.getRequestURI()
                 ));
@@ -75,10 +66,7 @@ public class GlobalExceptionHandler {
     ) {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
-                .body(new ErrorResponse(
-                        Instant.now(),
-                        HttpStatus.UNAUTHORIZED.value(),
-                        "Unauthorized",
+                .body(ErrorResponse.unauthorized(
                         exception.getMessage(),
                         request.getRequestURI()
                 ));
