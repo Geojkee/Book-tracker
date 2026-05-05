@@ -3,7 +3,7 @@ databaseChangeLog:
       id: V1__create_users_table.sql
       author: zhora (generated)
       sqlFile:
-        path: db/changelog/changes/V1_ Initial_scheme.sql
+        path: db/changelog/changes/V1__Initial_scheme.sql
         relativeToChangeFile: true
         splitStatements: true
         endDelimiter: ;
@@ -22,6 +22,15 @@ databaseChangeLog:
       author: zhora (generated)
       sqlFile:
         path: db/changelog/changes/V3__update_all_table.sql
+        relativeToChangeFile: true
+        splitStatements: true
+        endDelimiter: ;
+
+  - changeSet:
+      id: V4__rename_column_in_book.sql
+      author: zhora (generated)
+      sqlFile:
+        path: db/changelog/changes/V4__rename_column_in_book.sql
         relativeToChangeFile: true
         splitStatements: true
         endDelimiter: ;
