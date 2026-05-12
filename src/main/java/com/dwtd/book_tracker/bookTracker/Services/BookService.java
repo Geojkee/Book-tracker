@@ -10,6 +10,8 @@ import com.dwtd.book_tracker.bookTracker.Models.User;
 import com.dwtd.book_tracker.bookTracker.Repository.AuthorRepository;
 import com.dwtd.book_tracker.bookTracker.Repository.BookRepository;
 import com.dwtd.book_tracker.bookTracker.Repository.UserRepository;
+import jakarta.transaction.Transactional;
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -34,6 +36,10 @@ public class BookService {
 
         Author author = getAuthor(request.authorId());
 
+        if (request.publishYear() > java.time.Year.now().getValue()) {
+            throw new ValidationException("Publish year cannot be in the future");
+        }
+
         Book book = new Book(
                 request.title(),
                 request.isbn(),
@@ -53,8 +59,10 @@ public class BookService {
 
         User user = getCurrentUser();
 
+        log.info("Fetching books for user={}", user.getEmail());
+
         return bookRepository.
-                findAllBooksByUserId(user.getId(), pageable)
+                findByUserId(user.getId(), pageable)
                 .map(this::map);
     }
 
@@ -62,40 +70,44 @@ public class BookService {
 
         User user = getCurrentUser();
 
-        Book book = getBook(id);
+        Book book = getBookOrThrow(id);
 
         checkOwner(book, user);
 
         return map(book);
     }
 
+    @Transactional
     public BookResponse update(Long id, CreateBookRequest request) {
 
         User user = getCurrentUser();
 
-        Book book = getBook(id);
+        Book book = getBookOrThrow(id);
 
         checkOwner(book, user);
 
         Author author = getAuthor(request.authorId());
+
+        if (request.publishYear() > java.time.Year.now().getValue()) {
+            throw new IllegalArgumentException("Publish year cannot be in the future");
+        }
 
         book.setTitle(request.title());
         book.setIsbn(request.isbn());
         book.setPublishYear(request.publishYear());
         book.setAuthor(author);
 
-        Book updateBook = bookRepository.save(book);
+        log.info("Book updated: id={}, user={}", id, user.getEmail());
 
-        log.info("Book updated successfully id={}", id);
-
-        return map(updateBook);
+        return map(book);
     }
 
+    @Transactional
     public void delete(Long id) {
 
         User user = getCurrentUser();
 
-        Book book = getBook(id);
+        Book book = getBookOrThrow(id);
 
         checkOwner(book, user);
 
@@ -105,9 +117,14 @@ public class BookService {
     }
 
     private User getCurrentUser() {
-        String email = (String) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
+
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth == null || auth.getName() == null){
+            throw new ForbiddenException("Unauthorized");
+        }
+
+        String email = auth.getName();
 
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("User not found"));
@@ -118,7 +135,7 @@ public class BookService {
                 .orElseThrow(() -> new NotFoundException("Author not found"));
     }
 
-    private Book getBook(Long id) {
+    private Book getBookOrThrow(Long id) {
         return bookRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Book not found"));
 
@@ -126,6 +143,7 @@ public class BookService {
 
     private void checkOwner(Book book, User user){
         if (!book.getUser().getId().equals(user.getId())){
+            log.warn("Access denied: user={}, bookId={}", user.getEmail(), book.getId());
             throw new ForbiddenException("You don't have access to this book");
         }
     }

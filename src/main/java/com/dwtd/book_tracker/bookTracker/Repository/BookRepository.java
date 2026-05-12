@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
 
-    Page<Book> findAllBooksByUserId(Long userId, Pageable pageable);
+    Page<Book> findByUserId(Long userId, Pageable pageable);
 }
