@@ -42,4 +42,8 @@ public record ErrorResponse(
     public static ErrorResponse conflict(String message, String path){
         return of(HttpStatus.CONFLICT, message, path);
     }
+
+    public static ErrorResponse forbidden(String message, String path){
+        return of(HttpStatus.FORBIDDEN, message, path);
+    }
 }

@@ -6,10 +6,12 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "books")
 @Getter
+@Setter
 @NoArgsConstructor
 public class Book {
 
@@ -39,7 +41,7 @@ public class Book {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "authors_id", nullable = false)
+    @JoinColumn(name = "author_id", nullable = false)
     private Author author;
 
     @ManyToOne(fetch = FetchType.LAZY)
