@@ -1,5 +1,6 @@
 package com.dwtd.book_tracker.bookTracker.Controller;
 
+import com.dwtd.book_tracker.bookTracker.DTO.Book.BookFilter;
 import com.dwtd.book_tracker.bookTracker.DTO.Book.BookResponse;
 import com.dwtd.book_tracker.bookTracker.DTO.Book.CreateBookRequest;
 import com.dwtd.book_tracker.bookTracker.Services.BookService;
@@ -27,9 +28,15 @@ public class BookController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<BookResponse>> getAll(Pageable pageable) {
+    public ResponseEntity<Page<BookResponse>> getAll(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) Long authorId,
+            Pageable pageable
+    ){
+        BookFilter filter = new BookFilter(title, authorId);
+
         return ResponseEntity.status(HttpStatus.OK)
-                .body(bookService.getAll(pageable));
+                .body(bookService.getAll(filter, pageable));
     }
 
     @GetMapping("/{id}")

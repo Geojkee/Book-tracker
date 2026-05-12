@@ -1,5 +1,6 @@
 package com.dwtd.book_tracker.bookTracker.Services;
 
+import com.dwtd.book_tracker.bookTracker.DTO.Book.BookFilter;
 import com.dwtd.book_tracker.bookTracker.DTO.Book.BookResponse;
 import com.dwtd.book_tracker.bookTracker.DTO.Book.CreateBookRequest;
 import com.dwtd.book_tracker.bookTracker.Exception.ForbiddenException;
@@ -55,14 +56,16 @@ public class BookService {
         return map(savedBook);
     }
 
-    public Page<BookResponse> getAll(Pageable pageable) {
+    public Page<BookResponse> getAll(BookFilter filter, Pageable pageable){
 
         User user = getCurrentUser();
 
-        log.info("Fetching books for user={}", user.getEmail());
+        log.info("Fetching books with filter: user={}, title={}, authorId={}",
+                user.getEmail(), filter.title(), filter.authorId());
 
-        return bookRepository.
-                findByUserId(user.getId(), pageable)
+        var spec = BookSpecification.withFilters(filter, user.getId());
+
+        return bookRepository.findAll(spec, pageable)
                 .map(this::map);
     }
 
